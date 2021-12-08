@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       theme: appTheme.light,
       darkTheme: appTheme.dark,
@@ -41,6 +42,8 @@ class MyApp extends StatelessWidget {
         );
       },
       home: SignInScreeen(),
+
+    
     );
   }
 }

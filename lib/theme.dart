@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 abstract class AppColors {
   static const secondary = Color(0xFF3B76F6);
@@ -13,6 +15,7 @@ abstract class AppColors {
   static const textHighlight = secondary;
   static const cardLight = Color(0xFFF9FAFE);
   static const cardDark = Color(0xFF303334);
+
 }
 
 abstract class _LightColors {
@@ -92,4 +95,5 @@ class AppTheme {
     ),
     iconTheme: const IconThemeData(color: AppColors.iconLight),
   );
+
 }
