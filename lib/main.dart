@@ -1,5 +1,6 @@
-import 'package:chatapp/screens/chat_screen.dart';
-import 'package:chatapp/screens/profile_screen.dart';
+
+import 'package:chatapp/screens/home_screen.dart';
+
 import 'package:chatapp/screens/sign_in_screen.dart';
 import 'package:chatapp/theme.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,9 @@ class MyApp extends StatelessWidget {
             )
         );
       },
-      home: profile_screen(),
+
+      home: HomeScreen(),
+
 
     
     );
