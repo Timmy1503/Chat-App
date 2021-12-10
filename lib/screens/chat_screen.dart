@@ -1,16 +1,16 @@
-
+import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'dart:async';
 
-import 'package:chatapp/app.dart';
-//import 'package:chatapp/widgets/display_error_message.dart';
+import 'package:chatapp/helpers.dart';
+import 'package:chatapp/widgets/display_error_message.dart';
+import 'package:collection/collection.dart' show IterableExtension;
+import 'package:chatapp/theme.dart';
+import 'package:chatapp/widgets/glowing_action_button.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
-import 'package:collection/collection.dart' show IterableExtension;
-import '../helpers.dart';
-import '../theme.dart';
+import 'package:chatapp/app.dart';
 
 class ChatScreen extends StatefulWidget {
   static Route routeWithChannel(Channel channel) => MaterialPageRoute(
@@ -113,7 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-//------------------------------------------------------------------------
+
 class _MessageList extends StatelessWidget {
   const _MessageList({
     Key? key,
@@ -168,7 +168,7 @@ class _MessageList extends StatelessWidget {
     );
   }
 }
-//-------------------------------------------------------------------------
+
 class _MessageTile extends StatelessWidget {
   const _MessageTile({
     Key? key,
@@ -221,7 +221,7 @@ class _MessageTile extends StatelessWidget {
     );
   }
 }
-//------------------------------------------------------------------------
+
 class _MessageOwnTile extends StatelessWidget {
   const _MessageOwnTile({
     Key? key,
@@ -277,7 +277,6 @@ class _MessageOwnTile extends StatelessWidget {
     );
   }
 }
-//------------------------------------------------------------------------
 
 class _DateLable extends StatefulWidget {
   const _DateLable({
@@ -347,7 +346,7 @@ class __DateLableState extends State<_DateLable> {
     );
   }
 }
-//---------------------------------------------------------------------------
+
 class _AppBarTitle extends StatelessWidget {
   const _AppBarTitle({
     Key? key,
@@ -459,19 +458,22 @@ class _AppBarTitle extends StatelessWidget {
         }
       }
     }
+
     return TypingIndicator(
       alternativeWidget: alternativeWidget,
     );
   }
 }
-//---------------------------------------------------------------------------
 
+/// Widget to show the current list of typing users
 class TypingIndicator extends StatelessWidget {
+  /// Instantiate a new TypingIndicator
   const TypingIndicator({
     Key? key,
     this.alternativeWidget,
   }) : super(key: key);
 
+  /// Widget built when no typings is happening
   final Widget? alternativeWidget;
 
   @override
@@ -513,7 +515,6 @@ class TypingIndicator extends StatelessWidget {
     );
   }
 }
-//---------------------------------------------------------------------------
 
 /// Widget that builds itself based on the latest snapshot of interaction with
 /// a [Stream] of type [ConnectionStatus].
@@ -562,7 +563,6 @@ class ConnectionStatusBuilder extends StatelessWidget {
     );
   }
 }
-//---------------------------------------------------------------------------
 
 class _ActionBar extends StatefulWidget {
   const _ActionBar({Key? key}) : super(key: key);
@@ -646,5 +646,9 @@ class __ActionBarState extends State<_ActionBar> {
     );
   }
 }
+
+
+
+
 
 
