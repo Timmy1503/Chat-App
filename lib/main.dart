@@ -1,6 +1,11 @@
+
+
+import 'package:chatapp/screens/chat_screen.dart';
 import 'package:chatapp/screens/home_screen.dart';
-import 'package:chatapp/screens/select_user_screen.dart';
+
+
 import 'package:chatapp/screens/sign_in_screen.dart';
+import 'package:chatapp/screens/sign_up_screen.dart';
 import 'package:chatapp/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
@@ -43,9 +48,7 @@ class MyApp extends StatelessWidget {
             )
         );
       },
-      home: SignInScreeen(),
-
-    
+      home: SignUpScreen(),
     );
   }
 }
