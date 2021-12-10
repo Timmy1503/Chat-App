@@ -1,5 +1,11 @@
+
+import 'package:chatapp/app.dart';
+import 'package:chatapp/screens/screens.dart';
+import 'package:chatapp/theme.dart';
+import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 
 class HomeScreen extends StatelessWidget {
   static Route get route => MaterialPageRoute(
@@ -11,10 +17,10 @@ class HomeScreen extends StatelessWidget {
   final ValueNotifier<String> title = ValueNotifier('Messages');
 
   final pages = const [
-    MessagesPage(),
-    NotificationsPage(),
-    CallsPage(),
-    ContactsPage(),
+    // MessagesPage(),
+    // NotificationsPage(),
+    //  CallsPage(),
+    // ContactsPage(),
   ];
 
   final pageTitles = const [
@@ -55,7 +61,7 @@ class HomeScreen extends StatelessWidget {
               child: Avatar.small(
                 url: context.currentUserImage,
                 onTap: () {
-                  Navigator.of(context).push(ProfileScreen.route);
+                  // Navigator.of(context).push(ProfileScreen.route);
                 },
               ),
             ),
@@ -137,7 +143,7 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
                       builder: (BuildContext context) => const Dialog(
                         child: AspectRatio(
                           aspectRatio: 8 / 7,
-                          child: ContactsPage(),
+                          //      child: ContactsPage(),
                         ),
                       ),
                     );
