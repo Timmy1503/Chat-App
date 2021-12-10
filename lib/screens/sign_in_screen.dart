@@ -1,8 +1,11 @@
+import 'package:chatapp/screens/home_screen.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
+
+import '../app.dart';
 
 class SignInScreeen extends StatefulWidget {
   static Route get route =>
@@ -48,12 +51,12 @@ class _SignInScreenState extends State<SignInScreeen> {
         final client = StreamChatCore.of(context).client;
         await client.connectUser(User(id: credentials.user!.uid), result.data);
 
-        // await Navigator.of(context).pushReplacement(); //them man hinh home o day
+        await Navigator.of(context).pushReplacement(HomeScreen.route); //them man hinh home o day
       } on firebase.FirebaseAuthException catch (e) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
       } catch (e, st) {
-        //logger.e('Sign in error, ', e, st);
+        logger.e('Sign in error, ', e, st);
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('An error occured')));
       }
@@ -94,7 +97,7 @@ class _SignInScreenState extends State<SignInScreeen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CHATTER'),
+        title: Text('Chat App'),
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator())
