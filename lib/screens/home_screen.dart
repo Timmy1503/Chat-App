@@ -1,4 +1,5 @@
 
+import 'package:chatapp/pages/calls_page.dart';
 import 'package:chatapp/theme.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatelessWidget {
 
   // MessagesPage(),
     // NotificationsPage(),
-  //  CallsPage(),
+  CallsPage(),
    // ContactsPage(),
 
   ];
