@@ -1,6 +1,7 @@
 import 'package:chatapp/app.dart';
 import 'package:chatapp/models/demo_users.dart';
-import 'package:chatapp/screens/screens.dart';
+import 'package:chatapp/screens/home_screen.dart';
+//import 'package:chatapp/screens/screens.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';

@@ -1,6 +1,6 @@
 
 import 'package:chatapp/app.dart';
-import 'package:chatapp/screens/screens.dart';
+//import 'package:chatapp/screens/screens.dart';
 import 'package:chatapp/theme.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
