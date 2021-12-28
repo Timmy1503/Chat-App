@@ -8,7 +8,47 @@ const users = [
   userMessi,
   userReuben,
   userNash,
+  userHoang,
+  userlong,
+  userToan,
+  userViet,
+  userThy,
 ];
+
+const userHoang = DemoUser(
+  id: 'Hoang',
+  name: 'Trần Văn Hoàng',
+  image:
+  'https://s120-ava-talk.zadn.vn/5/1/1/3/9/120/5f4b9e30bd3ddd162839f8fd2fd9af32.jpg',
+);
+
+const userlong = DemoUser(
+  id: 'Long',
+  name: 'Mạnh Hùng Long',
+  image:
+  'https://png.pngtree.com/element_origin_min_pic/17/07/01/c94fa1c437bb1db26bc1bd12286e51c2.jpg',
+);
+
+const userToan = DemoUser(
+  id: 'Toan',
+  name: 'Nguyễn Viết Toàn',
+  image:
+  'https://s120-ava-talk.zadn.vn/6/d/3/9/44/120/bbea3e0f357a1338c93901575a59f025.jpg',
+);
+
+const userViet = DemoUser(
+  id: 'Viet',
+  name: 'Lê Văn Việt',
+  image:
+  'https://cover.talk.zdn.vn/default',
+);
+
+const userThy = DemoUser(
+  id: 'Thy',
+  name: 'Trương Bảo Thy',
+  image:
+  'https://cover-talk.zadn.vn/8/8/3/e/7/5879562575515eebd3db7fad35f78044.jpg',
+);
 
 const userGordon = DemoUser(
   id: 'gordon',

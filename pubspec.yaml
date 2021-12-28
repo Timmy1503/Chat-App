@@ -27,17 +27,19 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cached_network_image: ^3.2.0
-  cloud_functions: ^3.2.1
+  cached_network_image: ^3.1.0
+  cloud_functions: ^3.0.5
   faker: ^2.0.0
-  firebase_auth: ^3.3.1
-  firebase_core: ^1.10.3
+  firebase_auth: ^3.1.4
+  firebase_core: ^1.8.0
   flutter:
     sdk: flutter
   google_fonts: ^2.1.0
   jiffy: ^4.1.0
   logger: ^1.1.0
   stream_chat_flutter_core: ^3.2.0
+  cloud_firestore: ^2.5.4
+  fluttertoast: ^8.0.8
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -48,11 +50,11 @@ dev_dependencies:
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
+  # encourage good coding practices. The lin  t set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^1.0.0
+  flutter_lints: ^1.0.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
