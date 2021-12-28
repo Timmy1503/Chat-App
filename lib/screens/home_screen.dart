@@ -1,5 +1,5 @@
-
-import 'package:chatapp/pages/calls_page.dart';
+import 'package:chatapp/pages/pages.dart';
+import 'package:chatapp/screens/screens.dart';
 import 'package:chatapp/theme.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,23 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:chatapp/app.dart';
 import 'package:flutter/services.dart';
 
-
 class HomeScreen extends StatelessWidget {
   static Route get route => MaterialPageRoute(
-    builder: (context) => HomeScreen(),
-  );
+        builder: (context) => HomeScreen(),
+      );
+
   HomeScreen({Key? key}) : super(key: key);
 
   final ValueNotifier<int> pageIndex = ValueNotifier(0);
   final ValueNotifier<String> title = ValueNotifier('Messages');
 
   final pages = const [
-
-  // MessagesPage(),
-    // NotificationsPage(),
-  CallsPage(),
-   // ContactsPage(),
-
+    MessagePage(),
+    NotificationPage(),
+    CallsPage(),
+    ContactsPage(),
   ];
 
   final pageTitles = const [
@@ -64,9 +62,7 @@ class HomeScreen extends StatelessWidget {
               child: Avatar.small(
                 url: context.currentUserImage,
                 onTap: () {
-
-                 // Navigator.of(context).push(ProfileScreen.route);
-
+                  Navigator.of(context).push(ProfileScreen.route);
                 },
               ),
             ),
@@ -149,8 +145,7 @@ class __BottomNavigationBarState extends State<_BottomNavigationBar> {
                         child: AspectRatio(
                           aspectRatio: 8 / 7,
 
-                    //      child: ContactsPage(),
-
+                               child: ContactsPage(),
                         ),
                       ),
                     );
@@ -219,10 +214,10 @@ class _NavigationBarItem extends StatelessWidget {
               lable,
               style: isSelected
                   ? const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: AppColors.secondary,
-              )
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.secondary,
+                    )
                   : const TextStyle(fontSize: 11),
             ),
           ],

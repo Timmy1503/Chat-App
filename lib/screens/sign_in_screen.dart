@@ -1,30 +1,31 @@
 import 'package:chatapp/screens/home_screen.dart';
+import 'package:chatapp/screens/sign_up_screen.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
-
 import '../app.dart';
 
-class SignInScreeen extends StatefulWidget {
-  static Route get route =>
-      MaterialPageRoute(builder: (context) => SignInScreeen());
-
-  const SignInScreeen({Key? key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  static Route get route => MaterialPageRoute(
+    builder: (context) => const SignInScreen(),
+  );
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreeen> createState() => _SignInScreenState();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreeen> {
+class _SignInScreenState extends State<SignInScreen> {
   final auth = firebase.FirebaseAuth.instance;
   final functions = FirebaseFunctions.instance;
-  final _emailRegex = RegExp(
-      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _emailRegex = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
   bool _loading = false;
 
   Future<void> _signIn() async {
@@ -33,32 +34,44 @@ class _SignInScreenState extends State<SignInScreeen> {
         _loading = true;
       });
       try {
-        final credentials = await firebase.FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text);
+        // Authenticate with Firebase
+        final creds =
+        await firebase.FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
-        final user = credentials.user;
+        final user = creds.user;
+
         if (user == null) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('User is empty')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User is empty')),
+          );
           return;
         }
 
+        // Get Stream user token from Firebase Functions
         final callable = functions.httpsCallable('getStreamUserToken');
-        final result = await callable();
+        final results = await callable();
 
+        // Connnect stream user
         final client = StreamChatCore.of(context).client;
-        await client.connectUser(User(id: credentials.user!.uid), result.data);
+        await client.connectUser(
+          User(id: creds.user!.uid),
+          results.data,
+        );
 
-        await Navigator.of(context).pushReplacement(HomeScreen.route); //them man hinh home o day
+        // Navigate to home screen
+        await Navigator.of(context).pushReplacement(HomeScreen.route);
       } on firebase.FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message ?? 'Auth error')),
+        );
       } catch (e, st) {
         logger.e('Sign in error, ', e, st);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('An error occured')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('An error occured')),
+        );
       }
       setState(() {
         _loading = false;
@@ -68,20 +81,20 @@ class _SignInScreenState extends State<SignInScreeen> {
 
   String? _emailInputValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email cannot be empty';
+      return 'Cannot be empty';
     }
     if (!_emailRegex.hasMatch(value)) {
-      return "Not a valid email";
+      return 'Not a valid email';
     }
     return null;
   }
 
-  String? _passwordValidator(String? value) {
+  String? _passwordInputValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password cannot be empty';
+      return 'Cannot be empty';
     }
-    if (value.length <= 8) {
-      return 'Password needs to be longer than 8 characters';
+    if (value.length <= 6) {
+      return 'Password needs to be longer than 6 characters';
     }
     return null;
   }
@@ -97,76 +110,79 @@ class _SignInScreenState extends State<SignInScreeen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat App'),
+        title: const Text('CHATTER'),
       ),
       body: _loading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 24, bottom: 24),
-                        child: Text(
-                          'Welcome back',
-                          style: TextStyle(
-                              fontSize: 26, fontWeight: FontWeight.w800),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: _emailController,
-                          validator: _emailInputValidator,
-                          decoration: InputDecoration(hintText: 'Email'),
-                          keyboardType: TextInputType.emailAddress,
-                          autofillHints: [AutofillHints.email],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextFormField(
-                          controller: _passwordController,
-                          validator: _passwordValidator,
-                          decoration: InputDecoration(hintText: 'Password'),
-                          obscureText: true,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          keyboardType: TextInputType.visiblePassword,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          onPressed: _signIn,
-                          child: Text(
-                            'Sign in',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      Divider(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('Already have a account?',
-                              style: Theme.of(context).textTheme.subtitle2),
-                          SizedBox(width: 8),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).push(SignInScreeen.route);
-                              },
-                              child: Text('Create account'))
-                        ],
-                      )
-                    ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 24, bottom: 24),
+                  child: Text(
+                    'Welcome back',
+                    style: TextStyle(
+                        fontSize: 26, fontWeight: FontWeight.w800),
                   ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _emailController,
+                    validator: _emailInputValidator,
+                    decoration: const InputDecoration(hintText: 'email'),
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _passwordController,
+                    validator: _passwordInputValidator,
+                    decoration: const InputDecoration(
+                      hintText: 'password',
+                    ),
+                    obscureText: true,
+                    enableSuggestions: false,
+                    autocorrect: false,
+                    keyboardType: TextInputType.visiblePassword,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: _signIn,
+                    child: const Text(
+                      'Sign in',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Already have an account?',
+                        style: Theme.of(context).textTheme.subtitle2),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(SignUpScreen.route);
+                      },
+                      child: const Text('Create account'),
+                    ),
+                  ],
+                ),
+              ],
             ),
+          ),
+        ),
+      ),
     );
   }
 }
