@@ -1,17 +1,8 @@
-
-
-import 'package:chatapp/screens/chat_screen.dart';
-import 'package:chatapp/screens/home_screen.dart';
-
-
-import 'package:chatapp/screens/sign_in_screen.dart';
-import 'package:chatapp/screens/sign_up_screen.dart';
+import 'package:chatapp/screens/screens.dart';
 import 'package:chatapp/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:chatapp/screens/chat_screen.dart';
-
 import 'app.dart';
 
 void main() async {
@@ -48,7 +39,12 @@ class MyApp extends StatelessWidget {
             )
         );
       },
-      home: SignInScreeen(),
+
+      home: const SignInScreeen(),
+
     );
   }
 }
+
+// https://www.youtube.com/watch?v=3DO6Th9A7mY
+// https://www.youtube.com/watch?v=DthKmtjth1k

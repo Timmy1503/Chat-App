@@ -1,5 +1,6 @@
 
 import 'package:chatapp/app.dart';
+import 'package:chatapp/screens/screens.dart';
 
 import 'package:chatapp/screens/splash_screen.dart';
 import 'package:chatapp/widgets/avatar.dart';
@@ -73,7 +74,7 @@ class __SignOutButtonState extends State<_SignOutButton> {
 
       await firebase.FirebaseAuth.instance.signOut();
 
-      Navigator.of(context).pushReplacement(SplashScreen.route);
+      Navigator.of(context).pushReplacement(SelectUserScreen.route);
 
     } on Exception catch (e, st) {
       logger.e('Could not sign out', e, st);

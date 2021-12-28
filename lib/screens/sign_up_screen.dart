@@ -1,8 +1,12 @@
 import 'package:chatapp/app.dart';
+import 'package:chatapp/models/user_model.dart';
 import 'package:chatapp/screens/home_screen.dart';
+import 'package:chatapp/screens/screens.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -28,59 +32,102 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _emailRegex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
-  Future<void> _signUp() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _loading = true;
-      });
-      try {
-        final credentials = await firebase.FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text);
-        final user = credentials.user;
-        if (user == null) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('User is empty')));
-          return;
-        }
+  // Future<void> _signUp() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _loading = true;
+  //     });
+  //     try {
+  //       final credentials = await firebase.FirebaseAuth.instance
+  //           .createUserWithEmailAndPassword(
+  //               email: _emailController.text,
+  //               password: _passwordController.text);
+  //       final user = credentials.user;
+  //       if (user == null) {
+  //         ScaffoldMessenger.of(context)
+  //             .showSnackBar(SnackBar(content: Text('User is empty')));
+  //         return;
+  //       }
+  //
+  //       List<Future<void>> future = [
+  //         credentials.user!.updateDisplayName(_nameController.text),
+  //         if (_profilePictureController.text.isNotEmpty)
+  //           credentials.user!.updatePhotoURL(_profilePictureController.text)
+  //       ];
+  //
+  //       await Future.wait(future);
+  //
+  //       final callable = functions.httpsCallable('createStreamUserAndGetToken');
+  //       final result = await callable();
+  //       final client = StreamChatCore.of(context).client;
+  //       await client.connectUser(
+  //           User(
+  //               id: credentials.user!.uid,
+  //               name: _nameController.text,
+  //               image: _profilePictureController.text),
+  //           result.data);
+  //
+  //       await Navigator.of(context).pushReplacement(HomeScreen.route);
+  //     } on firebase.FirebaseAuthException catch (e) {
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
+  //     } catch (e, st) {
+  //       logger.e('Sign up error', e, st);
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text('An error occured')));
+  //     }
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //   }
+  // }
 
-        List<Future<void>> future = [
-          credentials.user!.updateDisplayName(_nameController.text),
-          if (_profilePictureController.text.isNotEmpty)
-            credentials.user!.updatePhotoURL(_profilePictureController.text)
-        ];
-
-        await Future.wait(future);
-
-        final callable = functions.httpsCallable('createStreamUserAndGetToken');
-        final result = await callable();
-        final client = StreamChatCore.of(context).client;
-        await client.connectUser(
-            User(
-                id: credentials.user!.uid,
-                name: _nameController.text,
-                image: _profilePictureController.text),
-            result.data);
-
-        await Navigator.of(context).pushReplacement(HomeScreen.route);
-      } on firebase.FirebaseAuthException catch (e) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
-      } catch (e, st) {
-        logger.e('Sign up error', e, st);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('An error occured')));
-      }
-      setState(() {
-        _loading = false;
+  void signUp(String email, String password) async{
+    if(_formKey.currentState!.validate()){
+      await auth.createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {
+        postDetailsToFirestore()
+      }).catchError((e){
+        Fluttertoast.showToast(msg: e!.message);
       });
     }
+  }
+
+  postDetailsToFirestore() async{
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    firebase.User? user = auth.currentUser;
+    UserModel userModel = UserModel(
+        uid: user!.uid,
+        email: _emailController.text,
+        name: _nameController.text,
+        image: _profilePictureController.text);
+
+    // userModel.email = user!.email;
+    // userModel.uid = user.uid;
+    // userModel.fullName = _nameController.text;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully");
+
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInScreeen()), (route) => false);
   }
 
   String? _nameInputValidatior(String? value) {
     if (value == null || value.isEmpty) {
       return 'Name cannot be empty';
+    }
+    return null;
+  }
+
+  String? _emailInputValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Cannot be empty';
+    }
+    if (!_emailRegex.hasMatch(value)) {
+      return 'Not a valid email';
     }
     return null;
   }
@@ -147,6 +194,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   keyboardType: TextInputType.url,
                 ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    controller: _emailController,
+                    validator: _emailInputValidator,
+                    decoration: const InputDecoration(hintText: 'email'),
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                  ),
+                ),
                 Padding(padding: EdgeInsets.all(8.0),
                 child: TextFormField(controller: _passwordController,
                 validator: _passwordInputValidator,
@@ -159,7 +216,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 Padding(padding: EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: _signUp,
+                  onPressed:() {
+                    signUp(_emailController.text, _passwordController.text);
+                  }, //_signIn,
                   child: Text('Sign up'),
                 ),
                 ),

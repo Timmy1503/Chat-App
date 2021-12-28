@@ -1,5 +1,7 @@
 import 'package:chatapp/screens/home_screen.dart';
+import 'package:chatapp/screens/sign_up_screen.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
@@ -18,50 +20,67 @@ class SignInScreeen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreeen> {
-  final auth = firebase.FirebaseAuth.instance;
-  final functions = FirebaseFunctions.instance;
+
+  //final auth = firebase.FirebaseAuth.instance;
+  //final functions = FirebaseFunctions.instance;
+
+  final _auth = FirebaseAuth.instance;
   final _emailRegex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _loading = false;
 
-  Future<void> _signIn() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _loading = true;
-      });
-      try {
-        final credentials = await firebase.FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-                email: _emailController.text,
-                password: _passwordController.text);
+  // Future<void> _signIn() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       _loading = true;
+  //     });
+  //     try {
+  //       final credentials = await firebase.FirebaseAuth.instance
+  //           .signInWithEmailAndPassword(
+  //               email: _emailController.text,
+  //               password: _passwordController.text);
+  //
+  //       final user = credentials.user;
+  //       if (user == null) {
+  //         ScaffoldMessenger.of(context)
+  //             .showSnackBar(SnackBar(content: Text('User is empty')));
+  //         return;
+  //       }
+  //
+  //       final callable = functions.httpsCallable('getStreamUserToken');
+  //       final result = await callable();
+  //
+  //       final client = StreamChatCore.of(context).client;
+  //      // await client.connectUser(User(id: credentials.user!.uid), result.data);
+  //
+  //       await Navigator.of(context).pushReplacement(HomeScreen.route); //them man hinh home o day
+  //     } on firebase.FirebaseAuthException catch (e) {
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
+  //     } catch (e, st) {
+  //       logger.e('Sign in error, ', e, st);
+  //       ScaffoldMessenger.of(context)
+  //           .showSnackBar(SnackBar(content: Text('An error occured')));
+  //     }
+  //     setState(() {
+  //       _loading = false;
+  //     });
+  //   }
+  // }
 
-        final user = credentials.user;
-        if (user == null) {
+  void signIn(String email, String password) async{
+    if(_formKey.currentState!.validate()){
+      await _auth.signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('User is empty')));
-          return;
-        }
-
-        final callable = functions.httpsCallable('getStreamUserToken');
-        final result = await callable();
-
-        final client = StreamChatCore.of(context).client;
-        await client.connectUser(User(id: credentials.user!.uid), result.data);
-
-        await Navigator.of(context).pushReplacement(HomeScreen.route); //them man hinh home o day
-      } on firebase.FirebaseAuthException catch (e) {
+              .showSnackBar(SnackBar(content: Text('Sign in successfull'))),
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()))
+      }).catchError((e){
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
-      } catch (e, st) {
-        logger.e('Sign in error, ', e, st);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('An error occured')));
-      }
-      setState(() {
-        _loading = false;
+            .showSnackBar(SnackBar(content: Text('User is empty')));
       });
     }
   }
@@ -124,6 +143,10 @@ class _SignInScreenState extends State<SignInScreeen> {
                           decoration: InputDecoration(hintText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
                           autofillHints: [AutofillHints.email],
+                          onSaved: (value){
+                            _emailController.text = value!;
+                          },
+                          textInputAction: TextInputAction.next,
                         ),
                       ),
                       Padding(
@@ -136,12 +159,18 @@ class _SignInScreenState extends State<SignInScreeen> {
                           enableSuggestions: false,
                           autocorrect: false,
                           keyboardType: TextInputType.visiblePassword,
+                          onSaved: (value){
+                            _passwordController.text = value!;
+                          },
+                          textInputAction: TextInputAction.next,
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(8.0),
                         child: ElevatedButton(
-                          onPressed: _signIn,
+                          onPressed: () {
+                            signIn(_emailController.text, _passwordController.text);
+                          }, //_signIn,
                           child: Text(
                             'Sign in',
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -157,7 +186,7 @@ class _SignInScreenState extends State<SignInScreeen> {
                           SizedBox(width: 8),
                           TextButton(
                               onPressed: () {
-                                Navigator.of(context).push(SignInScreeen.route);
+                                Navigator.of(context).push(SignUpScreen.route);
                               },
                               child: Text('Create account'))
                         ],

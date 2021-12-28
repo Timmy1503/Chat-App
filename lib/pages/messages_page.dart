@@ -1,7 +1,7 @@
-import 'package:chatapp/models/models.dart';
-import 'package:chatapp/screens/screens.dart';
+
+import 'package:chatapp/models/story_data.dart';
+import 'package:chatapp/screens/chat_screen.dart';
 import 'package:chatapp/theme.dart';
-import 'package:chatapp/widgets/display_error_message.dart';
 import 'package:chatapp/widgets/unread_indicator.dart';
 import 'package:chatapp/widgets/widgets.dart';
 import 'package:faker/faker.dart';
@@ -10,14 +10,15 @@ import 'package:jiffy/jiffy.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'package:chatapp/app.dart';
 import '../helpers.dart';
-class MessagePage extends StatefulWidget {
-  const MessagePage({Key? key}) : super(key: key);
+
+class MessagesPage extends StatefulWidget {
+  const MessagesPage({Key? key}) : super(key: key);
 
   @override
   _MessagesPageState createState() => _MessagesPageState();
 }
 
-class _MessagesPageState extends State<MessagePage> {
+class _MessagesPageState extends State<MessagesPage> {
   final channelListController = ChannelListController();
 
   @override
