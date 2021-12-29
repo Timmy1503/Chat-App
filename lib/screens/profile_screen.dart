@@ -1,7 +1,6 @@
 
 import 'package:chatapp/app.dart';
 import 'package:chatapp/screens/screens.dart';
-import 'package:chatapp/screens/sign_in_screen.dart';
 
 import 'package:chatapp/screens/splash_screen.dart';
 import 'package:chatapp/widgets/avatar.dart';
