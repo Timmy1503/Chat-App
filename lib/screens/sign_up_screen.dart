@@ -102,10 +102,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         name: _nameController.text,
         image: _profilePictureController.text);
 
-    // userModel.email = user!.email;
-    // userModel.uid = user.uid;
-    // userModel.fullName = _nameController.text;
-
     await firebaseFirestore
         .collection("users")
         .doc(user.uid)

@@ -1,7 +1,8 @@
 import 'package:chatapp/screens/home_screen.dart';
+import 'package:chatapp/screens/home_screen333.dart';
 import 'package:chatapp/screens/sign_up_screen.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase;
 import 'package:flutter/material.dart';
@@ -24,7 +25,7 @@ class _SignInScreenState extends State<SignInScreeen> {
   //final auth = firebase.FirebaseAuth.instance;
   //final functions = FirebaseFunctions.instance;
 
-  final _auth = FirebaseAuth.instance;
+  final _auth = firebase.FirebaseAuth.instance;
   final _emailRegex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   final _formKey = GlobalKey<FormState>();
@@ -32,56 +33,33 @@ class _SignInScreenState extends State<SignInScreeen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _loading = false;
 
-  // Future<void> _signIn() async {
-  //   if (_formKey.currentState!.validate()) {
-  //     setState(() {
-  //       _loading = true;
-  //     });
-  //     try {
-  //       final credentials = await firebase.FirebaseAuth.instance
-  //           .signInWithEmailAndPassword(
-  //               email: _emailController.text,
-  //               password: _passwordController.text);
-  //
-  //       final user = credentials.user;
-  //       if (user == null) {
-  //         ScaffoldMessenger.of(context)
-  //             .showSnackBar(SnackBar(content: Text('User is empty')));
-  //         return;
-  //       }
-  //
-  //       final callable = functions.httpsCallable('getStreamUserToken');
-  //       final result = await callable();
-  //
-  //       final client = StreamChatCore.of(context).client;
-  //      // await client.connectUser(User(id: credentials.user!.uid), result.data);
-  //
-  //       await Navigator.of(context).pushReplacement(HomeScreen.route); //them man hinh home o day
-  //     } on firebase.FirebaseAuthException catch (e) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text(e.message ?? 'Auth error')));
-  //     } catch (e, st) {
-  //       logger.e('Sign in error, ', e, st);
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text('An error occured')));
-  //     }
-  //     setState(() {
-  //       _loading = false;
-  //     });
-  //   }
-  // }
-
   void signIn(String email, String password) async{
     if(_formKey.currentState!.validate()){
-      await _auth.signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
+      setState(() {
+        _loading = true;
+      });
+      try{
+        await _auth.signInWithEmailAndPassword(email: email, password: password);
+        firebase.User? user = _auth.currentUser;
+        final client = StreamChatCore.of(context).client;
+        await client.connectUser(
+            User(
+              id: user!.uid,
+            ),
+            client.devToken(user.uid).rawValue,
+        );
+
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Sign in successfull'))),
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen()))
-      }).catchError((e){
+              .showSnackBar(SnackBar(content: Text('Sign in successfull')));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomeScreen333()));
+      }on Exception catch (e){
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('User is empty')));
-      });
+      };
+
+    setState(() {
+      _loading = false;
+    });
     }
   }
 
