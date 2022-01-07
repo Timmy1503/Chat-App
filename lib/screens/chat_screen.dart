@@ -77,7 +77,9 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Center(
                 child: IconBorder(
                   icon: CupertinoIcons.video_camera_solid,
-                  onTap: () {},
+                  onTap: () {
+//                    Get.to(VideoCallScreen());
+                  },
                 ),
               ),
             ),
@@ -86,7 +88,9 @@ class _ChatScreenState extends State<ChatScreen> {
               child: Center(
                 child: IconBorder(
                   icon: CupertinoIcons.phone_solid,
-                  onTap: () {},
+                  onTap: () {
+//                    Get.to(AudioCallScreen());
+                  },
                 ),
               ),
             ),
