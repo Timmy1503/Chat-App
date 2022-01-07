@@ -1,6 +1,7 @@
 import 'package:chatapp/screens/screens.dart';
 import 'package:chatapp/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'app.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
+    return GetMaterialApp(
       theme: appTheme.light,
       darkTheme: appTheme.dark,
       debugShowCheckedModeBanner: false,
