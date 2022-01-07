@@ -1,6 +1,8 @@
+import 'package:chatapp/screens/audio_call_screen.dart';
+import 'package:chatapp/screens/video_call_screen.dart';
 import 'package:stream_chat_flutter_core/stream_chat_flutter_core.dart';
 import 'dart:async';
-
+import 'package:get/get.dart';
 import 'package:chatapp/helpers.dart';
 import 'package:chatapp/widgets/display_error_message.dart';
 import 'package:collection/collection.dart' show IterableExtension;
@@ -78,7 +80,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: IconBorder(
                   icon: CupertinoIcons.video_camera_solid,
                   onTap: () {
-//                    Get.to(VideoCallScreen());
+                    Get.to(VideoCallScreen());
                   },
                 ),
               ),
@@ -89,7 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: IconBorder(
                   icon: CupertinoIcons.phone_solid,
                   onTap: () {
-//                    Get.to(AudioCallScreen());
+                    Get.to(AudioCallScreen());
                   },
                 ),
               ),
